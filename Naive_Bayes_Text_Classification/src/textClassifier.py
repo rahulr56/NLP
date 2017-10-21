@@ -90,19 +90,28 @@ class NaiveBayes:
             localScore = 0
             classProb = float(self.speakerData[speaker].get("docCount")/float(self.totalDocs))
             for i in range(len(data)):
-                count = self.speakerData[speaker]["words"].get(i) or 0
+                count = self.speakerData[speaker]["words"].get(data[i]) or 0
                 localScore += math.log((count + 1.0)/(self.vocabSize + self.speakerData[speaker].get("wordCount")))
+                # localScore += math.log(count/float(self.speakerData[speaker].get("wordCount")))
             result[localScore + math.log(classProb)] = speaker
         predictedSpeaker = result[min(result.keys())]
-        pp.pprint(result)
-        pp.pprint(predictedSpeaker)
+        return predictedSpeaker
 
 
     def computeModel(self, testData):
+        positiveCount = negativeCount = 0
         for actualSpeaker in testData.keys():
             dataToPredict = testData[actualSpeaker]
             for statement in dataToPredict:
-                self.score(statement)
+                predictedSpeaker = self.score(statement)
+                print (actualSpeaker+"\t:\t"+predictedSpeaker)
+                if actualSpeaker == predictedSpeaker:
+                    positiveCount += 1
+                else:
+                    negativeCount += 1
+        print ("Positive Count : "+str(positiveCount))
+        print ("Negative Count : "+str(negativeCount))
+        print ("Accuracy : "+str(positiveCount/float(positiveCount+negativeCount)))
 
 
     def printTrainingModel(self):
