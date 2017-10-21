@@ -88,9 +88,14 @@ class NaiveBayes:
         speakers = self.speakerData.keys()
         for speaker in speakers:
             localScore = 0
+            classProb = float(self.speakerData[speaker].get("docCount")/float(self.totalDocs))
             for i in range(len(data)):
                 count = self.speakerData[speaker]["words"].get(i) or 0
-                localScore += math.log((count + 1.0)/(self.vocabSize + (self.uniGram.uniDict.get(sentence[i]) or 0)))
+                localScore += math.log((count + 1.0)/(self.vocabSize + self.speakerData[speaker].get("wordCount")))
+            result[localScore + math.log(classProb)] = speaker
+        predictedSpeaker = result[min(result.keys())]
+        pp.pprint(result)
+        pp.pprint(predictedSpeaker)
 
 
     def computeModel(self, testData):
