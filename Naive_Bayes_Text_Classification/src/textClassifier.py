@@ -29,7 +29,7 @@ def __getSpeaketDict(speakerData):
 
 def __prepareData(data):
     data = re.sub('[ ]+',' ', re.sub('[.,\?]',' ',data.strip()))
-    data = data.split(' ')
+    data = data.strip().split(' ')
     return data[0],data[1:]
 
 
@@ -55,7 +55,7 @@ def parseTrainingData(data):
 
 def prepareModel(testData):
     for line in testData:
-        print (line.strip())
+        print (__prepareData(line))
 
 
 def main():
