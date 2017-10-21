@@ -27,13 +27,18 @@ def __getSpeaketDict(speakerData):
     return speakerData, len(set(vocabSize.strip().split(' ')))
 
 
-def parseSpeakerData(data):
+def __prepareData(data):
+    data = re.sub('[ ]+',' ', re.sub('[.,\?]',' ',data.strip()))
+    data = data.split(' ')
+    return data[0],data[1:]
+
+
+def parseTrainingData(data):
     speakers = {}
     totalwords = 0
     for line in data:
-        line = re.sub('[ ]+',' ', re.sub('[.,\?]',' ',line.strip()))
-        speakerName = line.split(' ')[0]
-        ldata = line.split(' ')[1:]
+        # line = re.sub('[ ]+',' ', re.sub('[.,\?]',' ',line.strip()))
+        speakerName, ldata = __prepareData(line)
         totalwords += len(ldata)
 
         if speakers.get(speakerName):
@@ -45,23 +50,27 @@ def parseSpeakerData(data):
             speakers[speakerName]["statement"]= " ".join(ldata)+" "
 
     speakers, vocabSize = __getSpeaketDict(speakers)
-    print("vocabSize :"+str(vocabSize))
     return speakers, totalwords, vocabSize
 
 
+def prepareModel(testData):
+    for line in testData:
+        print (line.strip())
+
+
 def main():
-    data = readfile("../data/train")
-    speakerData, totalwords, vocabSize= parseSpeakerData(data)
+    trainData = readfile("../data/train")
+    testData = readfile("../data/test")
+
+    speakerData, totalwords, vocabSize= parseTrainingData(trainData)
 
     pp.pprint(speakerData)
     print ("Main total words :  ")
     print(totalwords)
     print ("Main Vocab words :  ")
     print(vocabSize)
-
+    prepareModel(testData)
 
 
 if __name__=="__main__":
-    print("Hello")
     main()
-
