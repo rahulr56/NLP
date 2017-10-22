@@ -24,6 +24,12 @@ class NaiveBayes:
         return data
 
 
+    def __genClassVocab(self):
+        for speaker in self.speakerData.keys():
+            data = self.speakerData[speaker].get("statement").strip()
+            lVocabSize = len(set(data.split(' ')))
+            self.speakerData[speaker]["classVocabSize"] = lVocabSize
+
     def __getSpeaketDict(self, speakerData):
         vocabSize = ""
         for speaker in speakerData:
@@ -69,6 +75,7 @@ class NaiveBayes:
 
         self.speakerData, self.vocabSize = self.__getSpeaketDict(speakers)
         self.__genBagOfWords()
+        self.__genClassVocab()
 
 
     def parseTestData(self, fileName):
@@ -90,11 +97,11 @@ class NaiveBayes:
             localScore = 0
             classProb = float(self.speakerData[speaker].get("docCount")/float(self.totalDocs))
             for i in range(len(data)):
-                count = self.speakerData[speaker]["words"].get(data[i]) or 0
-                localScore += math.log((count + 1.0)/(self.vocabSize + self.speakerData[speaker].get("wordCount")))
+                count = self.speakerData[speaker]["words"].get(data[i]) or 1
+                localScore += math.log((count + 1.0)/(self.speakerData[speaker].get("classVocabSize") + self.speakerData[speaker].get("wordCount")))
                 # localScore += math.log(count/float(self.speakerData[speaker].get("wordCount")))
             result[localScore + math.log(classProb)] = speaker
-        predictedSpeaker = result[min(result.keys())]
+        predictedSpeaker = result[max(result.keys())]
         return predictedSpeaker
 
 
@@ -129,7 +136,6 @@ def main():
     nb = NaiveBayes()
     nb.parseTrainingData("../data/train")
     testData = nb.parseTestData("../data/test")
-    nb.printTrainingModel()
     nb.computeModel(testData)
 
 
