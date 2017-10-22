@@ -1,10 +1,7 @@
 import re
-import math
-import pprint
-from nltk import FreqDist as fd
+from math import log
 from nltk import word_tokenize
-
-pp = pprint.PrettyPrinter(indent=3)
+from nltk import FreqDist as fd
 
 class NaiveBayes:
     # Member variiables of the class
@@ -86,8 +83,8 @@ class NaiveBayes:
             classProb = float(self.speakerData[speaker].get("docCount")/float(self.totalDocs))
             for word in data:
                 count = self.speakerData[speaker]["words"].get(word, 0)
-                localScore += math.log((count + 1.0)/(self.vocabSize + self.speakerData[speaker].get("wordCount")))
-            result[localScore + math.log(classProb)] = speaker
+                localScore += log((count + 1.0)/(self.vocabSize + self.speakerData[speaker].get("wordCount")))
+            result[localScore + log(classProb)] = speaker
         predictedSpeaker = result[max(result.keys())]
         return predictedSpeaker
 
