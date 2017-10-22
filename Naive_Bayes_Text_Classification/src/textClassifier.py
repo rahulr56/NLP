@@ -98,7 +98,7 @@ class NaiveBayes:
             classProb = float(self.speakerData[speaker].get("docCount")/float(self.totalDocs))
             for i in range(len(data)):
                 count = self.speakerData[speaker]["words"].get(data[i]) or 1
-                localScore += math.log((count + 1.0)/(self.speakerData[speaker].get("classVocabSize") + self.speakerData[speaker].get("wordCount")))
+                localScore += math.log((count + 1.0)/(self.vocabSize + self.speakerData[speaker].get("wordCount")))
                 # localScore += math.log(count/float(self.speakerData[speaker].get("wordCount")))
             result[localScore + math.log(classProb)] = speaker
         predictedSpeaker = result[max(result.keys())]
