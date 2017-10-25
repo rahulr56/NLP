@@ -5,12 +5,14 @@ from nltk import FreqDist as fd
 
 class NaiveBayes:
     # Member variiables of the class
-    vocabSize = 0
-    totalDocs = 0
-    speakerData = {}
-    totalTrainData = ""
-    bagOfWords = {}
-    totalWords = 0
+    def __init__(self):
+        self.alpha = 0.1
+        self.vocabSize = 0
+        self.totalDocs = 0
+        self.speakerData = {}
+        self.totalTrainData = ""
+        self.bagOfWords = {}
+        self.totalWords = 0
 
     def __readfile(self, fileName):
         data = ""
@@ -83,7 +85,7 @@ class NaiveBayes:
             classProb = float(self.speakerData[speaker].get("docCount")/float(self.totalDocs))
             for word in data:
                 count = self.speakerData[speaker]["words"].get(word, 0)
-                localScore += log((count + 1.0)/(self.vocabSize + self.speakerData[speaker].get("wordCount")))
+                localScore += log((count + self.alpha)/((self.alpha*self.vocabSize) + self.speakerData[speaker].get("wordCount")))
             result[localScore + log(classProb)] = speaker
         predictedSpeaker = result[max(result.keys())]
         return predictedSpeaker
@@ -117,6 +119,7 @@ class NaiveBayes:
         print ("")
 
 
+# Main function to build a model and analyse it
 def main():
     print ("# Intializing the model")
     nb = NaiveBayes()
@@ -129,6 +132,7 @@ def main():
     nb.computeModel(testData)
 
 
+# Main starts here
 if __name__=="__main__":
     main()
 
