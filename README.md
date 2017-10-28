@@ -86,8 +86,8 @@ Accuracy : 1.25%
 
 kNearestNeighbours
 Evaluating k-NN
-Positive Count : 0
-Negative Count : 400
-Accuracy : 0.0%
+Positive Count : 3
+Negative Count : 397
+Accuracy : 0.75%
 ```
 ![Top 20 word plots for speakers](https://github.com/rahulr56/NLP/blob/master/Naive_Bayes_Text_Classification/src/plot.png)
