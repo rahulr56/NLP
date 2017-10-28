@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import re
 import nltk
 import numpy
@@ -248,8 +250,6 @@ class NaiveBayes:
                 for i in range(len(statement)-1):
                     count = trainBiGram[speaker].get(tuple([statement[i],statement[i+1]]),
                             self.speakerData[speaker]["words"].get(statement[i],0))
-                    print (count)
-                    print (tuple([statement[i],statement[i+1]]))
                     localScore += log((count + self.alpha)/((self.alpha*self.vocabSize) + len(trainBiGram[speaker].keys())))
                 result[localScore + log(classProb)] = speaker
                 predictedSpeaker = result[max(result.keys())]
@@ -273,8 +273,8 @@ def main():
     print ("# Testing the model using test data ")
     print ("# Predicting test data ")
     nb.computeModel(testData)
-#    nb.kNearestNeighbours()
     nb.bigram(testData)
+    nb.kNearestNeighbours()
 
 # Main starts here
 if __name__=="__main__":
