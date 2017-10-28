@@ -22,8 +22,11 @@ Accuracy : 1.25%
 ```
 
 ### k-Nearesr neighbor Prediction 
-
-
+```
+Positive Count : 3
+Negative Count : 397
+Accuracy : 0.75%
+```
 
 ### Analysis and Implementation 
 * I have developed a unigram model to build Naive Bayes classifier.
