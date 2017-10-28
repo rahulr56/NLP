@@ -185,16 +185,21 @@ class NaiveBayes:
         convertedCentroids = {}
         for speaker in train.keys():
             convertedCentroids[speaker] = numpy.array(train[speaker])
-
         positiveCount = negativeCount = 0
         for actualSpeaker in test.keys():
             for vector in test[actualSpeaker]:
                 distances = {}
                 vector = numpy.array(vector)
+                val = 999999999
                 for trainSpeaker in convertedCentroids.keys():
-                    distances[trainSpeaker] = norm(vector - convertedCentroids[trainSpeaker])
+                    tempval = norm(vector - convertedCentroids[trainSpeaker])
+                    if val > tempval:
+                        val = tempval
+                        distances[trainSpeaker] = val
                 distances = sorted(distances.items(), key=lambda x: x[1])
-                if actualSpeaker == distances[0][0]:
+                print (distances)
+                print (actualSpeaker+"\t\t\t"+distances[-1][0])
+                if actualSpeaker == distances[-1][0]:
                     positiveCount += 1
                 else:
                     negativeCount += 1
