@@ -197,8 +197,8 @@ class NaiveBayes:
                         val = tempval
                         distances[trainSpeaker] = val
                 distances = sorted(distances.items(), key=lambda x: x[1])
-                print (distances)
-                print (actualSpeaker+"\t\t\t"+distances[-1][0])
+                #print (distances)
+                #print (actualSpeaker+"\t\t\t"+distances[-1][0])
                 if actualSpeaker == distances[-1][0]:
                     positiveCount += 1
                 else:
