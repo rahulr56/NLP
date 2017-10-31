@@ -51,7 +51,7 @@
 
 
 ### Running the code :
-* Clone the repo at [languagemodels_nlp](https://github.com/rahulr56/languagemodels_nlp)
+* Clone the repo at [languagemodels_nlp](https://github.com/rahulr56/NLP/tree/master/LanguageModels)
 ```
 $ cd src
 $ python3 SpellCorrect.py
