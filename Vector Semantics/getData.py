@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import re
 import pprint
 import urllib2
 
@@ -19,16 +18,15 @@ class Utils:
             newData[classes] = data[classes]
         return newData
 
-
     def getData(self):
         data = urllib2.urlopen(DATAURL).readlines()
         data = [line.strip() for line in data]
         dataDict = {}
         key = ""
         for line in data:
-            if line[0]==":":
+            if line[0] == ":":
                 key = line[2:]
-                dataDict[key]=[]
+                dataDict[key] = []
             elif line[0] == '/':
                 continue
             else:
@@ -39,3 +37,4 @@ class Utils:
 if __name__ == "__main__":
     ut = Utils()
     pp.pprint(ut.getData().keys())
+
