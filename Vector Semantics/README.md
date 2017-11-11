@@ -83,3 +83,7 @@ Sample Output:
 #  Accuracy : 0.70060483871
 #######################################
 ```
+
+## Reason for Antonyms appearing colose to one another
+Word embeddings are usually trained on an objective that ensures that words occurring in similar contexts have similar embeddings. Antonyms are often interchangeable in context and thus have similar word embeddings even though they denote opposites. If we think of word embeddings as members of a commutative group, then antonyms should be inverses of (as opposed to similar to) each other. Word embeddings only take into consideration the context of when the words occur. They don’t deal with the meanings of the sentences; hence it doesn’t differentiate between antonyms or any other kind of word groups.
+
