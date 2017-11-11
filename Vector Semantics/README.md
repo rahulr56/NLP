@@ -1,6 +1,16 @@
 # Vector Semantics
 ## Word Embeddings
+*__Word Embeddings__*
+A process of converting words in clear text to a mathematical vector representation. The vectors for words can be generated using a few models like:
+* Neural networks
+* Probabilistic Models 
 
+Word embedding is an important technique used for various NLP applications such as personal assistants, text mining etc., . However, it is quite a troublesome work to prepare word embeddings. 
+Datasets:
+* word2vec : Word2vec uses a simple neural network model to construcct the vector for a given word. As this uses a neural network, for large data inputs, the neural networks becomes better over time in identifying the relationships between words. The ouput from this neural network is a vector that represents each word in mathematical format. This further helps in performing various operations on the vectors to achive a particular task in text mining.
+* Glove : Glove stands for Global Vectos. It uses an unsupervised model for converting words to vectors
+The reason for using Glove is that is maintains the word contexts while retaining word vectors. The context can be separated form the vector of matrix using a function from word2vec. 
+word2vec does not provide any reason for the vector representation of the words. On the other hand, Glove provides some justification regarding the vector represntations. 
 ### Using word2vec
 Sample Output:
 ```
@@ -83,3 +93,60 @@ Sample Output:
 #  Accuracy : 0.70060483871
 #######################################
 ```
+
+## Reason for Antonyms appearing colose to one another
+Word embeddings are usually trained on an objective that ensures that words occurring in similar contexts have similar embeddings. Antonyms are often interchangeable in context and thus have similar word embeddings even though they denote opposites. If we think of word embeddings as members of a commutative group, then antonyms should be inverses of (as opposed to similar to) each other. Word embeddings only take into consideration the context of when the words occur. They don’t deal with the meanings of the sentences; hence it doesn’t differentiate between antonyms or any other kind of word groups.
+
+
+## Custom Word Analogies
+I have considered profession, a class for the custom anology. For example : `eye optician art artist` is an analogy in this class. On similar lines, I have considered object and the material used to prepare it. An example for that class is : `belt leather tie silk`. 
+The prediction accuraciies for the above mentioned classes are as follows:
+```
+------------------------------------------
+|              Custom Data               |
+------------------------------------------
+#######################################
+#   Class :profession#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 1.0
+#######################################
+#   Class :profession#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 1.0
+#######################################
+#   Class :attire#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 1.0
+#######################################
+#   Class :attire#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 1.0
+#######################################
+#   Class :politicians#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 0.0
+#######################################
+#   Class :politicians#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 0.0
+#######################################
+```
+
+
+## Requirements
+Datasets:
+* [Google word2vec dataset](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit?usp=sharing)
+* [GloVe Dataset](http://nlp.stanford.edu/data/glove.840B.300d.zip)
+Both the files are named `GoogleNews-vectors-negative300.bin` and `glove.840B.300d.txt` respectively in the sae directory as the code. 
+
+### Running
+The model can be built and evaluated by using the command
+```
+python getData.py
+````
