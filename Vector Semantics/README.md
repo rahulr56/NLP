@@ -101,7 +101,42 @@ Word embeddings are usually trained on an objective that ensures that words occu
 ## Custom Word Analogies
 I have considered profession, a class for the custom anology. For example : `eye optician art artist` is an analogy in this class. On similar lines, I have considered object and the material used to prepare it. An example for that class is : `belt leather tie silk`. 
 The prediction accuraciies for the above mentioned classes are as follows:
-
+```
+------------------------------------------
+|              Custom Data               |
+------------------------------------------
+#######################################
+#   Class :profession#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 1.0
+#######################################
+#   Class :profession#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 1.0
+#######################################
+#   Class :attire#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 1.0
+#######################################
+#   Class :attire#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 1.0
+#######################################
+#   Class :politicians#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 0.0
+#######################################
+#   Class :politicians#
+#  Positive count :3
+#  Negativve count :0
+#  Accuracy : 0.0
+#######################################
+```
 
 
 ## Requirements
