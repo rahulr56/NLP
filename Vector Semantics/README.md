@@ -102,3 +102,16 @@ Word embeddings are usually trained on an objective that ensures that words occu
 I have considered profession, a class for the custom anology. For example : `eye optician art artist` is an analogy in this class. On similar lines, I have considered object and the material used to prepare it. An example for that class is : `belt leather tie silk`. 
 The prediction accuraciies for the above mentioned classes are as follows:
 
+
+
+## Requirements
+Datasets:
+* [Google word2vec dataset](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit?usp=sharing)
+* [GloVe Dataset](http://nlp.stanford.edu/data/glove.840B.300d.zip)
+Both the files are named `GoogleNews-vectors-negative300.bin` and `glove.840B.300d.txt` respectively in the sae directory as the code. 
+
+### Running
+The model can be built and evaluated by using the command
+```
+python getData.py
+````
