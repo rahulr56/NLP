@@ -4,6 +4,7 @@
 A process of converting words in clear text to a mathematical vector representation. The vectors for words can be generated using a few models like:
 * Neural networks
 * Probabilistic Models 
+
 Word embedding is an important technique used for various NLP applications such as personal assistants, text mining etc., . However, it is quite a troublesome work to prepare word embeddings. 
 Datasets:
 * word2vec : Word2vec uses a simple neural network model to construcct the vector for a given word. As this uses a neural network, for large data inputs, the neural networks becomes better over time in identifying the relationships between words. The ouput from this neural network is a vector that represents each word in mathematical format. This further helps in performing various operations on the vectors to achive a particular task in text mining.
