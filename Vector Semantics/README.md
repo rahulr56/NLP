@@ -4,8 +4,6 @@
 ### Using word2vec
 Sample Output:
 ```
-#Initializing System
-Building Google Model
 #######################################
 #   Class :gram3-comparative#
 #  Positive count :1131
