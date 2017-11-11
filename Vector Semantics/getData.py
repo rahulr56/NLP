@@ -21,7 +21,7 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 
 # create formatter
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 # add formatter to ch
 ch.setFormatter(formatter)
@@ -50,7 +50,7 @@ class Utils:
 
     def getData(self):
         data = ""
-        if os.access("myfile", os.R_OK):
+        if os.access(TESTDATA, os.R_OK):
             logger.info("Reading test data from file"+TESTDATA)
             data = open(TESTDATA, "r").readlines()
         else:
@@ -118,11 +118,9 @@ def predictData(data, key, model):
 
 def buildModels():
     logger.info("Building Google Model")
-    print("Building Google Model")
     googleModel = gensim.models.KeyedVectors.load_word2vec_format(
           './GoogleNews-vectors-negative300.bin', binary=True)
     logger.info("Building Glove Model")
-    print("Building Glove Model")
     if not (os.access("glove.840B.300d_out.txt", os.R_OK)):
         glove2word2vec("./glove.840B.300d.txt", "glove.840B.300d_out.txt")
     gloveModel = gensim.models.KeyedVectors.load_word2vec_format(
@@ -135,7 +133,42 @@ if __name__ == "__main__":
     data, vocab = ut.getData()
     logger.info("Predicting Data")
     googleModel, gloveModel = buildModels()
+    print ("------------------------------------------")
+    print ("|             Google Model               |")
+    print ("------------------------------------------")
     for reqClass in data.keys():
         predictData(data[reqClass], reqClass, googleModel)
+
+    print ("------------------------------------------")
+    print ("|              Glove Model               |")
+    print ("------------------------------------------")
     for reqClass in data.keys():
         predictData(data[reqClass], reqClass, gloveModel)
+
+    customData = {
+                "profession": ["art artist teeth dentist",
+                              "eye optician art artist",
+                              "physics physicist botany botanist"],
+                "attire": ["belt leather tie silk",
+                          "cuffs metal shoes rubber",
+                          "goggles glass ring platinum"]
+		"politicians": ["alexander greece nepolian france", 
+				"hindenburg germany tippu mysore",
+				"lincoln illinoi trudeau canada"] }
+	
+    vocab["attire"]=["silk", "rubber", "platinum"]
+    vocab["profession"]=["dentist", "artist", "botanist"]
+    vocab["politicians"]=["france", "mysore", "canada"]
+    logger.info("Prediting custom data")
+    print ("\n")
+    print ("------------------------------------------")
+    print ("|              Custom Data               |")
+    print ("------------------------------------------")
+    predictData(customData["profession"], "profession", googleModel)
+    predictData(customData["profession"], "profession", gloveModel)
+    predictData(customData["attire"], "attire", googleModel)
+    predictData(customData["politicians"], "politicians", gloveModel)
+    predictData(customData["politicians"], "politicians", googleModel)
+    predictData(customData["attire"], "attire", gloveModel)
+    key = input("Press Q to quit")
+        
