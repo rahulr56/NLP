@@ -1,13 +1,15 @@
 #!/bin/python
 
+import os
 import copy
 import pprint
-import os
+import operator
 import pickle as p
 from nltk import FreqDist
 
 pp = pprint.PrettyPrinter(indent=2)
-modelFile = "../data/ibmModel.pkcl"
+MODEL_FILE = "../data/ibmModel1.pkcl"
+RESULT_FILE = "../data/spanishToEnglishResult.txt"
 
 
 class IBMModel:
@@ -84,7 +86,7 @@ class IBMModel:
         total = {}
         smoothingValue = 1e-12
         limit = 0
-        while (oltT != self.t):
+        while (oltT != self.t) and limit < 15:
             oltT = copy.deepcopy(self.t)
             tempCount = copy.deepcopy(self.count)
             for s in self.spanishVocab:
@@ -111,7 +113,7 @@ class IBMModel:
             self.__updateTranslateProbablilities(tempCount, total)
             limit += 1
             print ("=="*(limit+1)+str(10*(limit+1))+"%")
-        with open(modelFile, 'wb') as f:
+        with open(MODEL_FILE, 'wb') as f:
             p.dump([self.t, tempCount], f)
 
     def __updateTranslateProbablilities(self, tempCount, total):
@@ -130,20 +132,49 @@ class IBMModel:
         self.__genPairs()
         print (">>> Building unigram model from data")
         self.__buildUniGramForeign()
-        if not os.path.isfile(modelFile):
+        if not os.path.isfile(MODEL_FILE):
             self.__intiliazeUniformTEF()
             print ("Starting the process of converging...")
             self.__converge()
         else:
             print(">>> Loading model from the existing file")
-            with open(modelFile, 'rb') as f:
+            with open(MODEL_FILE, 'rb') as f:
                 self.t, self.count = p.load(f)
             print(">>> Modle is loaded succssfully")
+        pp.pprint(self.t.items()[0])
+
+    def __getEnglishEquivalent(self, word):
+        """  Gets an English equivalent of a given Spanish word """
+        result = word
+        if word in self.t:
+            result = max(self.t[word].items(), key=operator.itemgetter(1))[0]
+        return result
+
+    def printProgress(self, p):
+        print(str(p) + '% ' + '▓' * p + '░' * (100 - p), end='\r')
+
+    def predict(self, data, resultFile=RESULT_FILE):
+        f = self.__openFile(resultFile,"w")
+        counter = len(data)
+        progress = 0
+        a = round(progress * 100 / counter)
+        self.printProgress(a)
+        for sentence in data:
+            prediction = []
+            line = sentence.strip().split()
+            for word in line:
+                prediction.append(self.__getEnglishEquivalent(word))
+            f.write(' '.join(prediction)+'\n')
+            progress += 1
+            a = round(progress * 100 / counter)
+            self.printProgress(a)
+        f.close()
 
 
 def main():
     ibmModel = IBMModel()
     ibmModel.buildModel()
+    ibmModel.predict(ibmModel.spanishTest)
     print(ibmModel)
 
 
