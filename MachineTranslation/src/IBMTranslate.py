@@ -1,9 +1,13 @@
 #!/bin/python
 
+import copy
 import pprint
+import os
+import pickle as p
 from nltk import FreqDist
 
 pp = pprint.PrettyPrinter(indent=2)
+modelFile = "../data/ibmModel.pkcl"
 
 
 class IBMModel:
@@ -19,12 +23,14 @@ class IBMModel:
         self.englishTest = self.__getData("../data/es-en/test/newstest2013.en")
         self.englishDev = self.__getData("../data/es-en/dev/newstest2012.en")
 
+        self.englishTrain = [line.strip() for line in self.englishTrain]
+        self.spanishTrain = [line.strip() for line in self.spanishTrain]
         self.englishVocab = set((" ".join(self.englishTrain)).split(" "))
         self.spanishVocab = set((" ".join(self.spanishTrain)).split(" "))
         self.translationPairs = []
         self.englishTotalsDict = {}
         self.foreginUnigram = {}
-        self.translationProbabilities = {}
+        self.t = {}
 
     def __openFile(self, fileName, mode="r"):
         try:
@@ -46,10 +52,25 @@ class IBMModel:
         self.foreginUnigram = dict(FreqDist(words).items())
 
     def __intiliazeUniformTEF(self):
-        self.translationProbabilities = {}
-        for foreignWord in self.spanishVocab:
-            for englishWord in self.englishVocab:
-                self.translationProbabilities[foreignWord][englishWord] = 0.25
+        self.t = dict(zip(list(self.spanishVocab),
+                          [{}]*len(self.spanishVocab)))
+        self.count = dict(zip(list(self.spanishVocab),
+                              [{}] * len(self.spanishVocab)))
+        # Initialize the whold dict of t and count with 0s
+        print(">>> Initlilize transaltion probabilities and count with 0")
+        for (x, y) in self.translationPairs:
+            spanish = x.strip().split(' ')
+            english = y.strip().split(' ')
+            for foreignWord in spanish:
+                for englishWord in english:
+                    self.t[foreignWord][englishWord] = 0.0
+                    self.count[foreignWord][englishWord] = 0.0
+        # Normalize t
+        print(">>> Normalizing the transaltion probabilities")
+        for f in self.t.keys():
+            norm = len(self.t[f])
+            for e in self.t[f].keys():
+                self.t[f][e] = 1/norm
 
     def __genPairs(self):
         for i in range(len(self.englishTrain)):
@@ -57,24 +78,67 @@ class IBMModel:
                                           self.englishTrain[i]))
 
     def __converge(self):
-        converged = False
-        while not converged:
+        tempCount = {}
+        oltT = {}
+        s_total = {}
+        total = {}
+        smoothingValue = 1e-12
+        limit = 0
+        while (oltT != self.t):
+            oltT = copy.deepcopy(self.t)
+            tempCount = copy.deepcopy(self.count)
+            for s in self.spanishVocab:
+                total[s] = 0.0
             for (x, y) in self.translationPairs:
                 spanish = x.strip().split(' ')
                 english = y.strip().split(' ')
                 for eWord in english:
-                    self.englishTotalsDict[eWord] = 0
+                    s_total[eWord] = 0.0
                     for s in spanish:
-                        sPorbs = self.translationProbabilities[s]
-                        if eWord not in sPorbs:
+                        if s not in self.t:
                             continue
+                        s_total[eWord] += self.t[s].get(eWord, 0)
+                for e in english:
+                    for s in spanish:
+                        if (s not in tempCount) or (e not in tempCount):
+                            continue
+                        if (s not in self.t):
+                            continue
+                        tempCount[s][e] += (self.t[s].get(e, 0) /
+                                            (s_total.get(e, smoothingValue) or
+                                             smoothingValue))
+
+            self.__updateTranslateProbablilities(tempCount, total)
+            limit += 1
+            print ("=="*(limit+1)+str(10*(limit+1))+"%")
+        with open(modelFile, 'wb') as f:
+            p.dump([self.t, tempCount], f)
+
+    def __updateTranslateProbablilities(self, tempCount, total):
+        smoothingValue = 1e-12
+        for s in self.spanishVocab:
+            for e in self.englishVocab:
+                if (s not in tempCount) or (e not in tempCount):
+                    continue
+                if (s not in self.t):
+                    continue
+                self.t[s][e] = (tempCount[s].get(e, 0) / (total[s] or
+                                smoothingValue))
 
     def buildModel(self):
+        print (">>> Initializing the model...")
         self.__genPairs()
+        print (">>> Building unigram model from data")
         self.__buildUniGramForeign()
-        exit(-3)
-        self.__intiliazeUniformTEF()
-        self.__converge()
+        if not os.path.isfile(modelFile):
+            self.__intiliazeUniformTEF()
+            print ("Starting the process of converging...")
+            self.__converge()
+        else:
+            print(">>> Loading model from the existing file")
+            with open(modelFile, 'rb') as f:
+                self.t, self.count = p.load(f)
+            print(">>> Modle is loaded succssfully")
 
 
 def main():
